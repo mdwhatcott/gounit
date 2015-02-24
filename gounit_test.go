@@ -369,7 +369,6 @@ type spyT struct {
 
 func NewSpyT() *spyT                       { return &spyT{} }
 func (self *spyT) Fail()                   { self.failed = true }
-func (self *spyT) Failed() bool            { return self.failed }
 func (self *spyT) SkipNow()                { self.skipped = true }
 func (self *spyT) Log(args ...interface{}) { self.log = fmt.Sprint(args...) }
 

@@ -21,7 +21,6 @@ import (
 // verification of correct behavior via automated testing.
 type T interface {
 	Fail()
-	Failed() bool
 	SkipNow()
 	Log(...interface{})
 }
