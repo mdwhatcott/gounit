@@ -1,12 +1,17 @@
 package gounit
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
+
+/*
+It should be noted that these tests verify that registered functions
+(setup, teardown, test cases) are executed or skipped as expected and
+the appropriate methods on the *testing.T are called. They make no effort
+to verify the formatting of console output. That's fiddly business which
+can be verified visually much more quickly and easily.
+*/
 
 func TestBlankFixtureDescriptionRegistration(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("", spy)
 	f.Test("mute point", func() {})
@@ -18,7 +23,7 @@ func TestBlankFixtureDescriptionRegistration(t *testing.T) {
 }
 
 func TestNoTestCases(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 	f.Setup(func() {})
@@ -31,7 +36,7 @@ func TestNoTestCases(t *testing.T) {
 }
 
 func TestBlankTestCaseRegistration(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 	f.Test("", func() {})
@@ -43,7 +48,7 @@ func TestBlankTestCaseRegistration(t *testing.T) {
 }
 
 func TestDuplicateTestCaseRegistration(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 	f.Test("B", func() {})
@@ -56,7 +61,7 @@ func TestDuplicateTestCaseRegistration(t *testing.T) {
 }
 
 func TestSkipNewFixture(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	setup, teardown := 0, 0
 	b1, b2, b3, b4, b5, b6 := false, false, false, false, false, false
@@ -102,7 +107,7 @@ func TestSkipNewFixture(t *testing.T) {
 }
 
 func TestPassingTests(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	b1, b2 := false, false
 
@@ -127,7 +132,7 @@ func TestPassingTests(t *testing.T) {
 }
 
 func TestFailingTest(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	b1 := false
 
@@ -148,7 +153,7 @@ func TestFailingTest(t *testing.T) {
 }
 
 func TestFailingGoTest(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	b1 := false
 
@@ -172,7 +177,7 @@ func TestFailingGoTest(t *testing.T) {
 }
 
 func TestPanickingTest(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 
@@ -203,7 +208,7 @@ func TestPanickingTest(t *testing.T) {
 }
 
 func TestSkippedTests(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	skip1, hi, skip2 := false, false, false
 
@@ -234,7 +239,7 @@ func TestSkippedTests(t *testing.T) {
 }
 
 func TestFocusedTests(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	b1, b2, b3, b4 := false, false, false, false
 
@@ -263,7 +268,7 @@ func TestFocusedTests(t *testing.T) {
 }
 
 func TestSkippedSoAssertion(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 	f.Test("B1", func() {
@@ -281,7 +286,7 @@ func TestSkippedSoAssertion(t *testing.T) {
 }
 
 func TestSetup(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	setup := 0
 	f := NewFixture("A", spy)
@@ -298,7 +303,7 @@ func TestSetup(t *testing.T) {
 }
 
 func TestSetupPanics(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 	f := NewFixture("A", spy)
 	f.Setup(func() { panic("GOPHERS!") })
 	f.Test("B1", func() {})
@@ -310,7 +315,7 @@ func TestSetupPanics(t *testing.T) {
 }
 
 func TestTeardown(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	teardown := 0
 
@@ -328,7 +333,7 @@ func TestTeardown(t *testing.T) {
 }
 
 func TestTeardownPanics(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 	f := NewFixture("A", spy)
 	f.Test("B1", func() {})
 	f.Teardown(func() { panic("GOPHERS!") })
@@ -340,7 +345,7 @@ func TestTeardownPanics(t *testing.T) {
 }
 
 func TestFixtureDisabledAfterRun(t *testing.T) {
-	spy := NewSpyT()
+	spy := new(spyT)
 
 	f := NewFixture("A", spy)
 	f.Test("This runs", func() {})
@@ -364,12 +369,10 @@ func TestFixtureDisabledAfterRun(t *testing.T) {
 type spyT struct {
 	failed  bool
 	skipped bool
-	log     string
 }
 
-func NewSpyT() *spyT                       { return &spyT{} }
 func (self *spyT) Fail()                   { self.failed = true }
 func (self *spyT) SkipNow()                { self.skipped = true }
-func (self *spyT) Log(args ...interface{}) { self.log = fmt.Sprint(args...) }
+func (self *spyT) Log(args ...interface{}) {}
 
 //////////////////////////////////////////////////////////////////////////////
