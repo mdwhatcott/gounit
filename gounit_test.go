@@ -371,8 +371,9 @@ type spyT struct {
 	skipped bool
 }
 
-func (self *spyT) Fail()                   { self.failed = true }
-func (self *spyT) SkipNow()                { self.skipped = true }
-func (self *spyT) Log(args ...interface{}) {}
+func (self *spyT) Fail()    { self.failed = true }
+func (self *spyT) SkipNow() { self.skipped = true }
+
+func (self *spyT) Log(args ...interface{}) { /* no-op */ }
 
 //////////////////////////////////////////////////////////////////////////////
