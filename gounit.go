@@ -13,7 +13,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/smartystreets/goconvey/convey/assertions"
+	"github.com/smartystreets/assertions"
 )
 
 // T contains the methods we use on the testing.T that is passed into the fixture.
@@ -315,10 +315,6 @@ func max(a, b int) int {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-func init() {
-	assertions.StandaloneMode(true)
-}
 
 var (
 	So                   = assertions.So
